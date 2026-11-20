@@ -11,8 +11,13 @@ class CustomButton extends StatelessWidget {
   final double? width;
   final double height;
   final Color? backgroundColor;
+  final Gradient? gradient;
   final Color? textColor;
   final double fontSize;
+  final IconData? icon;
+  final Color? iconColor;
+  final double? iconSize;
+  final bool iconAtStart;
 
   const CustomButton({
     super.key,
@@ -23,59 +28,116 @@ class CustomButton extends StatelessWidget {
     this.width,
     this.height = 56,
     this.backgroundColor,
+    this.gradient,
     this.textColor,
     this.fontSize = 16,
+    this.icon,
+    this.iconColor,
+    this.iconSize,
+    this.iconAtStart = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    final BorderRadius borderRadius = BorderRadius.circular(14);
+
+    // ઈમેજ મુજબનો એકદમ બ્રાઇટ અને પ્રોપર Blue-to-Indigo Gradient[cite: 15]
+    final Gradient exactButtonGradient = const LinearGradient(
+      colors: [
+        Color(0xFF1D74F5),
+        Color(0xFF3667F0),
+        Color(0xFF5856EC),
+      ],
+      stops: [0.0, 0.5, 1.0],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
+    final Color contentColor = isOutlined
+        ? AppColors.primary
+        : (textColor ?? AppColors.white);
+
+    return Container(
       width: width ?? double.infinity,
       height: height,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isOutlined
-              ? Colors.transparent
-              : (backgroundColor ?? AppColors.primary),
-          foregroundColor: isOutlined
-              ? AppColors.primary
-              : (textColor ?? Colors.white),
-          elevation: isOutlined ? 0 : 4,
-          shadowColor: AppColors.primary.withOpacity(0.4),
-          side: isOutlined
-              ? BorderSide(color: AppColors.primary, width: 1.5)
-              : BorderSide.none,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(13),
-          ),
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        color: isOutlined ? AppColors.white : backgroundColor,
+        gradient: (!isOutlined && backgroundColor == null)
+            ? (gradient ?? exactButtonGradient)
+            : null,
+        border: isOutlined
+            ? Border.all(color: AppColors.primary, width: 1.5)
+            : Border.all(
+          color: AppColors.white.withOpacity(0.18),
+          width: 1,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontFamily: AppFonts.bold,
-                color: isOutlined
-                    ? AppColors.primary
-                    : (textColor ?? Colors.white),
-                letterSpacing: 0.3,
-              ),
+        // boxShadow: isOutlined
+        //     ? null
+        //     : [
+        //   BoxShadow(
+        //     color: const Color(0xFF2563EB).withOpacity(0.32),
+        //     offset: const Offset(0, 6),
+        //     blurRadius: 14,
+        //     spreadRadius: 0,
+        //   ),
+        //   BoxShadow(
+        //     color: const Color(0xFF5856EC).withOpacity(0.20),
+        //     offset: const Offset(2, 4),
+        //     blurRadius: 10,
+        //   ),
+        // ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: borderRadius,
+          splashColor: AppColors.white.withOpacity(0.2),
+          highlightColor: AppColors.white.withOpacity(0.1),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null && iconAtStart) ...[
+                  Icon(
+                    icon,
+                    size: iconSize ?? 18.sp,
+                    color: iconColor ?? contentColor,
+                  ),
+                  const SizedBox(width: 8),
+                ],
+
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    fontFamily: AppFonts.bold,
+                    color: contentColor,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+
+                if (icon != null && !iconAtStart) ...[
+                  const SizedBox(width: 8),
+                  Icon(
+                    icon,
+                    size: iconSize ?? 18.sp,
+                    color: iconColor ?? contentColor,
+                  ),
+                ] else if (showArrow) ...[
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 18.sp,
+                    color: contentColor,
+                  ),
+                ],
+              ],
             ),
-            if (showArrow) ...[
-               SizedBox(width: 8),
-              Icon(
-                Icons.arrow_forward,
-                size: 18.sp,
-                color: isOutlined
-                    ? AppColors.primary
-                    : (textColor ?? Colors.white),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

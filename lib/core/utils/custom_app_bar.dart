@@ -8,6 +8,7 @@ class CustomAppBar extends StatelessWidget {
   final bool isMenu;
   final bool isBack;
   final bool isRightMenu;
+  final bool showProfile;
 
   final String title;
   final String subtitle;
@@ -23,8 +24,9 @@ class CustomAppBar extends StatelessWidget {
     this.isMenu = false,
     this.isBack = false,
     this.isRightMenu = false,
+    this.showProfile = false,
     this.title = 'Raiser AMC',
-    this.subtitle = 'Grevox Infotech',
+    this.subtitle = '',
     this.onMenuTap,
     this.onBackTap,
     this.onRightMenuTap,
@@ -37,7 +39,6 @@ class CustomAppBar extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 8.5.h,
-
       padding: EdgeInsets.symmetric(horizontal: 3.w),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -81,19 +82,19 @@ class CustomAppBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // LEFT SIDE: BACK / MENU / LOGO
+          // LEFT SIDE: MENU / BACK / LOGO
 
-          if (isBack)
-            _iconButton(
-              icon: Icons.arrow_back_rounded,
-              onTap: onBackTap ?? () => Navigator.pop(context),
-              background: AppColors.primary,
-              iconColor: AppColors.white,
-            )
-          else if (isMenu)
+          if (isMenu)
             _iconButton(
               icon: Icons.menu_rounded,
               onTap: onMenuTap,
+              background: AppColors.primary,
+              iconColor: AppColors.white,
+            )
+          else if (isBack)
+            _iconButton(
+              icon: Icons.arrow_back_rounded,
+              onTap: onBackTap ?? () => Navigator.pop(context),
               background: AppColors.primary,
               iconColor: AppColors.white,
             )
@@ -147,27 +148,16 @@ class CustomAppBar extends StatelessWidget {
                   ),
                 ),
 
-                if (!isBack)
-                  Text(
-                    subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontFamily: AppFonts.medium,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
               ],
             ),
           ),
 
-          // RIGHT SIDE: MENU / NOTIFICATION / PROFILE
+
 
           if (isBack && isRightMenu)
             _iconButton(
               icon: Icons.menu_rounded,
-              onTap: onRightMenuTap,
+              onTap: onRightMenuTap ?? onMenuTap,
               background: AppColors.primary,
               iconColor: AppColors.white,
             )
@@ -180,54 +170,55 @@ class CustomAppBar extends StatelessWidget {
               showDot: true,
             ),
 
-            SizedBox(width: 2.w),
+            if (showProfile) ...[
+              SizedBox(width: 2.w),
 
-            // PROFILE BUTTON
-            GestureDetector(
-              onTap: onProfileTap,
-              child: Container(
-                height: 9.5.w,
-                width: 9.5.w,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFFEFF6FF),
-                      Color(0xFFDCEAFE),
+              GestureDetector(
+                onTap: onProfileTap,
+                child: Container(
+                  height: 9.5.w,
+                  width: 9.5.w,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFEFF6FF),
+                        Color(0xFFDCEAFE),
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.primaryLight.withValues(
+                        alpha: 0.35,
+                      ),
+                      width: 1.2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.13),
+                        blurRadius: 7,
+                        offset: const Offset(0, 3),
+                      ),
+                      const BoxShadow(
+                        color: Colors.white,
+                        blurRadius: 3,
+                        offset: Offset(-1, -1),
+                      ),
                     ],
                   ),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primaryLight.withValues(
-                      alpha: 0.35,
+                  child: Text(
+                    'G',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontFamily: AppFonts.bold,
+                      color: AppColors.primaryDark,
                     ),
-                    width: 1.2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.13),
-                      blurRadius: 7,
-                      offset: const Offset(0, 3),
-                    ),
-                    const BoxShadow(
-                      color: Colors.white,
-                      blurRadius: 3,
-                      offset: Offset(-1, -1),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  'G',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    fontFamily: AppFonts.bold,
-                    color: AppColors.primaryDark,
                   ),
                 ),
               ),
-            ),
+            ],
           ],
         ],
       ),

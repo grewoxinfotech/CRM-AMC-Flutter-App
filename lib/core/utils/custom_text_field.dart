@@ -16,6 +16,9 @@ class CustomTextField extends StatefulWidget {
   final VoidCallback? onFilterChange;
   final VoidCallback? onTap;
   final bool isReadOnly;
+  final int? maxLength;
+  final int? maxLines;
+  final int? minLines;
 
   const CustomTextField({
     Key? key,
@@ -30,7 +33,10 @@ class CustomTextField extends StatefulWidget {
     this.isFilter = false,
     this.onFilterChange,
     this.onTap,
+    this.maxLength,
     this.isReadOnly = false,
+    this.maxLines,
+    this.minLines,
   }) : super(key: key);
 
   @override
@@ -51,14 +57,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 15.sp, // ડિઝાઇન મુજબ સાઈઝ થોડી નાની કરી
-            fontFamily: AppFonts.bold,
-            color: AppColors.textPrimary,
+        if (widget.label.trim().isNotEmpty) ...[
+          Text(
+            widget.label,
+            style: TextStyle(
+              fontSize: 15.sp,
+              fontFamily: AppFonts.bold,
+              color: AppColors.textPrimary,
+            ),
           ),
-        ),
+          SizedBox(height: 1.h),
+        ],
 
         SizedBox(height: 1.h),
 
@@ -70,6 +79,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
           validator: widget.validator,
           onTap: widget.onTap,
           readOnly: widget.isReadOnly,
+          maxLength: widget.maxLength,
+          maxLines: _obscureText ? 1 : (widget.maxLines ?? 1),
+          minLines: _obscureText ? 1 : (widget.minLines ?? 1),
+
           style: TextStyle(
             fontSize: 14.sp,
             color: AppColors.textPrimary,
@@ -79,11 +92,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
             hintText: widget.hintText,
             hintStyle: TextStyle(
               fontSize: 14.sp,
-              color: AppColors.textSecondary, // ફિગ્મા જેવો સોફ્ટ કલર
+              color: AppColors.textSecondary,
               fontFamily: AppFonts.semiBold,
             ),
 
-            // આઇકોન અને હિન્ટ વચ્ચે જગ્યા રાખવા માટે Padding આપ્યું
+
             prefixIcon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 3.w),
               child: Icon(

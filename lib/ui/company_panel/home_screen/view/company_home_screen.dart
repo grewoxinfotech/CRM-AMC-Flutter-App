@@ -4,8 +4,13 @@ import 'package:raiser_amc/core/theme/app_colors.dart';
 import 'package:raiser_amc/core/theme/app_fonts.dart';
 import 'package:raiser_amc/core/utils/custom_app_bar.dart';
 import 'package:raiser_amc/core/utils/custom_button.dart';
+import 'package:raiser_amc/core/utils/custom_side_drawer.dart';
+import 'package:raiser_amc/ui/company_panel/company_profile/view/comapny_%20security_profile.dart';
+import 'package:raiser_amc/ui/company_panel/company_profile/view/company_profile.dart';
+import 'package:raiser_amc/ui/company_panel/company_profile/view/personal_information.dart';
 import 'package:raiser_amc/ui/company_panel/home_screen/widgets/dashboard_stat_card.dart';
 import 'package:sizer/sizer.dart';
+
 
 class CompanyHomeScreen extends StatefulWidget {
   const CompanyHomeScreen({super.key});
@@ -61,20 +66,36 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     },
   ];
 
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer:  CustomSideDrawer(activeMenuId: 'dashboard'),
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
           Column(
             children: [
               SizedBox(height: 6.h),
+
               CustomAppBar(
                 title: "Raiser AMC",
                 subtitle: "Grevox Infotech",
                 isBack: false,
+                isMenu: true,
                 isRightMenu: false,
+
+                onMenuTap: () {
+                  _scaffoldKey.currentState?.openDrawer();
+                },
+
+                onRightMenuTap: () {
+                  _scaffoldKey.currentState?.openDrawer();
+                },
+
                 onProfileTap: () {
                   showMenu<String>(
                     context: context,
@@ -89,21 +110,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                         value: 'profile',
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.person_outline_rounded,
-                              color: AppColors.primary,
-                              size: 18.sp,
-                            ),
+                            Icon(Icons.person_outline_rounded,
+                                color: AppColors.primary, size: 18.sp),
                             SizedBox(width: 3.w),
-                            Text(
-                              'Profile',
-
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                color: AppColors.textPrimary,
-                                fontFamily: AppFonts.regular,
-                              ),
-                            ),
+                            Text('Profile'),
                           ],
                         ),
                       ),
@@ -111,20 +121,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                         value: 'security',
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.security_rounded,
-                              color: AppColors.primary,
-                              size: 18.sp,
-                            ),
+                            Icon(Icons.security_rounded,
+                                color: AppColors.primary, size: 18.sp),
                             SizedBox(width: 3.w),
-                            Text(
-                              'Security',
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                color: AppColors.textPrimary,
-                                fontFamily: AppFonts.regular,
-                              ),
-                            ),
+                            Text('Security'),
                           ],
                         ),
                       ),
@@ -132,21 +132,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                         value: 'company',
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.business_outlined,
-                              color: AppColors.primary,
-                              size: 18.sp,
-                            ),
+                            Icon(Icons.business_outlined,
+                                color: AppColors.primary, size: 18.sp),
                             SizedBox(width: 3.w),
-                            Text(
-                              'Company Profile',
-
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                color: AppColors.textPrimary,
-                                fontFamily: AppFonts.regular,
-                              ),
-                            ),
+                            Text('Company Profile'),
                           ],
                         ),
                       ),
@@ -156,27 +145,27 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
 
                     switch (value) {
                       case 'profile':
-                        Get.toNamed('/profile');
+                        Get.to(() => PersonalInformation());
                         break;
                       case 'security':
-                        Get.toNamed('/security');
+                        Get.to(() => CompanySecurityProfile());
                         break;
                       case 'company':
-                        Get.toNamed('/company-profile');
+                        Get.to(() => CompanyProfile());
                         break;
                     }
                   });
                 },
-                onBackTap: () {
-                  Get.back();
-                },
-                onRightMenuTap: () {},
-              ),
+              ).paddingSymmetric(horizontal: 4.w),
 
               SizedBox(height: 2.h),
 
               Expanded(
                 child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 4.w,
+                    vertical: 1.h,
+                  ),
                   child: Column(
                     children: [
                       Container(
@@ -1460,7 +1449,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 ),
               ),
             ],
-          ).paddingSymmetric(horizontal: 4.w),
+          ),
         ],
       ),
     );

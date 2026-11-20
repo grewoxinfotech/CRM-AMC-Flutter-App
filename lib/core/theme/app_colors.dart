@@ -52,4 +52,7 @@ class AppColors {
   static const Color surfaceSecondary = Color(0xFFF1F5F9);
 
   static const Color borderLight = Color(0xFFF1F5F9);
+
+
+
 }

@@ -40,6 +40,7 @@ dependencies:
   connectivity_plus:
   cached_network_image:
   flutter_secure_storage:
+  swipe_card_animation:
 
 
 dev_dependencies:
