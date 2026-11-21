@@ -38,14 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void handleLogin() {
-    if (!formKey.currentState!.validate()) {
-      AppSnackbar.show(
-        title: 'Validation Error',
-        message: 'Please enter valid details',
-        isSuccess: false,
-      );
-      return;
-    }
 
     if (isPasswordLogin) {
       AppSnackbar.show(
@@ -77,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           Positioned.fill(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration:  BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,

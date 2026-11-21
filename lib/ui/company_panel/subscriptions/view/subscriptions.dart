@@ -118,7 +118,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                             decoration: const BoxDecoration(
                               border: Border(
                                 left: BorderSide(
-                                  color: AppColors.primary,
+                                  color: AppColors.white,
                                   width: 5,
                                 ),
                               ),

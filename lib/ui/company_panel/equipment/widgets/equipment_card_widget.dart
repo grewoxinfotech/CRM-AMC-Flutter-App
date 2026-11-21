@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:raiser_amc/core/theme/app_colors.dart';
 import 'package:raiser_amc/core/theme/app_fonts.dart';
@@ -22,13 +21,6 @@ class EquipmentCardWidget extends StatelessWidget {
   final String installDate;
   final String price;
 
-  final IconData leadingIcon;
-  final Color iconColor;
-  final Color iconBgColor;
-
-  final Color? cardBgColor;
-  final Color? borderColor;
-
   final VoidCallback? onMapTap;
   final VoidCallback? onCallTap;
   final VoidCallback? onEditTap;
@@ -51,17 +43,21 @@ class EquipmentCardWidget extends StatelessWidget {
     required this.serialNo,
     required this.installDate,
     this.price = '-',
-    required this.leadingIcon,
-    required this.iconColor,
-    required this.iconBgColor,
-    this.cardBgColor,
-    this.borderColor,
     this.onMapTap,
     this.onCallTap,
     this.onEditTap,
     this.onDeleteTap,
     this.onAssignTap,
   });
+
+  static const Color primaryColor = Color(0xFF3568F5);
+  static const Color textColor = Color(0xFF17233C);
+  static const Color secondaryColor = Color(0xFF8493AE);
+  static const Color borderColor = Color(0xFFE8EDF5);
+  static const Color lightBlue = Color(0xFFEEF4FF);
+  static const Color lightGrey = Color(0xFFF7F9FC);
+  static const Color greenColor = Color(0xFF10A878);
+  static const Color redColor = Color(0xFFEF4444);
 
   @override
   Widget build(BuildContext context) {
@@ -70,35 +66,21 @@ class EquipmentCardWidget extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 1.5.h),
       padding: EdgeInsets.all(3.5.w),
       decoration: BoxDecoration(
-        color: cardBgColor ?? AppColors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: borderColor ?? AppColors.borderLight,
-          width: 1.1,
-        ),
+        border: Border.all(color: borderColor.withOpacity(0.7), width: 0.8),
         boxShadow: [
           BoxShadow(
-            color: AppColors.white.withOpacity(0.9),
-            offset: const Offset(-4, -4),
-            blurRadius: 12,
-            spreadRadius: 1,
-          ),
-          BoxShadow(
-            color: AppColors.black.withOpacity(0.10),
-            offset: const Offset(0, 7),
+            color: const Color(0xFF263B65).withOpacity(0.10),
             blurRadius: 18,
-            spreadRadius: 1,
+            spreadRadius: 0,
+            offset: const Offset(0, 7),
           ),
           BoxShadow(
-            color: AppColors.black.withOpacity(0.05),
-            offset: const Offset(4, 5),
-            blurRadius: 12,
-          ),
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.06),
-            offset: const Offset(0, 5),
-            blurRadius: 16,
-            spreadRadius: -2,
+            color: const Color(0xFF263B65).withOpacity(0.04),
+            blurRadius: 5,
+            spreadRadius: 0,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -110,22 +92,23 @@ class EquipmentCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 10.w,
-                height: 10.w,
+                height: 12.w,
+                width: 12.w,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: iconBgColor,
-                  borderRadius: BorderRadius.circular(11),
-                  border: Border.all(
-                    color: iconColor.withOpacity(0.12),
-                  ),
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFFDCE8FF)),
                 ),
                 child: Icon(
-                  leadingIcon,
-                  color: iconColor,
-                  size: 20.sp,
+                  Icons.precision_manufacturing_outlined,
+                  color: AppColors.white,
+                  size: 22.sp,
                 ),
               ),
-              SizedBox(width: 2.5.w),
+
+              SizedBox(width: 3.w),
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,41 +116,45 @@ class EquipmentCardWidget extends StatelessWidget {
                     Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       spacing: 2.w,
-                      runSpacing: 0.4.h,
+                      runSpacing: 0.5.h,
                       children: [
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 1.5.w,
-                            vertical: 0.3.h,
+                            horizontal: 2.w,
+                            vertical: 0.4.h,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.background,
+                            color: AppColors.primary,
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Text(
                             brand.toUpperCase(),
                             style: TextStyle(
-                              fontSize: 8.5.sp,
+                              fontSize: 14.sp,
                               fontFamily: AppFonts.bold,
-                              color: AppColors.textSecondary,
+                              color: AppColors.white,
                             ),
                           ),
                         ),
                         Text(
                           category,
                           style: TextStyle(
-                            fontSize: 9.sp,
+                            fontSize: 14.sp,
                             fontFamily: AppFonts.regular,
                             color: AppColors.textSecondary,
                           ),
                         ),
                       ],
                     ),
+
                     SizedBox(height: 0.5.h),
+
                     Text(
                       title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 11.5.sp,
+                        fontSize: 15.sp,
                         height: 1.25,
                         fontFamily: AppFonts.bold,
                         color: AppColors.textPrimary,
@@ -176,25 +163,24 @@ class EquipmentCardWidget extends StatelessWidget {
                   ],
                 ),
               ),
+
               SizedBox(width: 1.w),
+
               Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 2.w,
-                  vertical: 0.5.h,
+                  horizontal: 2.2.w,
+                  vertical: 0.6.h,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: const Color(0xFFDBEAFE),
-                  ),
+                  color: lightBlue,
+                  borderRadius: BorderRadius.circular(7),
                 ),
                 child: Text(
                   typeBadge,
                   style: TextStyle(
-                    fontSize: 8.sp,
+                    fontSize: 14.sp,
                     fontFamily: AppFonts.medium,
-                    color: const Color(0xFF2563EB),
+                    color: primaryColor,
                   ),
                 ),
               ),
@@ -203,68 +189,54 @@ class EquipmentCardWidget extends StatelessWidget {
 
           SizedBox(height: 1.8.h),
 
-          // LOCATION
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: 3.w,
-              vertical: 1.2.h,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.2.h),
             decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(11),
-              border: Border.all(
-                color: AppColors.borderLight,
-                width: 0.8,
-              ),
+              color: AppColors.border,
+              borderRadius: BorderRadius.circular(9),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.location_on_outlined,
-                  size: 16.sp,
-                  color: AppColors.iconSecondary,
+                  color: AppColors.primary,
+                  size: 18.sp,
                 ),
-                SizedBox(width: 2.w),
+
+                SizedBox(width: 1.5.w),
+
                 Expanded(
                   child: Text(
                     location,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 9.5.sp,
+                      fontSize: 14.sp,
                       height: 1.3,
                       fontFamily: AppFonts.regular,
-                      color: AppColors.textPrimary,
+                      color: textColor,
                     ),
                   ),
                 ),
+
                 SizedBox(width: 1.w),
-                InkWell(
-                  onTap: onMapTap,
-                  borderRadius: BorderRadius.circular(8),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 1.w,
-                      vertical: 0.5.h,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Map',
-                          style: TextStyle(
-                            fontSize: 9.sp,
-                            fontFamily: AppFonts.medium,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        Icon(
-                          Icons.open_in_new_rounded,
-                          size: 11.sp,
-                          color: AppColors.primary,
-                        ),
-                      ],
+
+                Container(
+                  height: 8.w,
+                  width: 8.w,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: InkWell(
+                    onTap: onMapTap,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Icon(
+                      Icons.location_on,
+                      size: 18.sp,
+                      color: AppColors.white,
                     ),
                   ),
                 ),
@@ -274,24 +246,40 @@ class EquipmentCardWidget extends StatelessWidget {
 
           SizedBox(height: 1.5.h),
 
-          // ASSIGNED CLIENT / UNASSIGNED
           if (isAssigned)
             Row(
               children: [
                 Container(
-                  width: 8.w,
-                  height: 8.w,
+                  height: 10.w,
+                  width: 10.w,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.12),
+                    color: AppColors.primary,
                     shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.30),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 4),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.10),
+                        blurRadius: 5,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Icon(
                     Icons.person_outline_rounded,
-                    size: 17.sp,
-                    color: AppColors.primary,
+                    color: AppColors.white,
+                    size: 18.sp,
                   ),
                 ),
-                SizedBox(width: 2.w),
+
+                SizedBox(width: 2.5.w),
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,33 +287,35 @@ class EquipmentCardWidget extends StatelessWidget {
                       Text(
                         'Installed For',
                         style: TextStyle(
-                          fontSize: 8.5.sp,
+                          fontSize: 14.sp,
                           fontFamily: AppFonts.regular,
                           color: AppColors.textSecondary,
                         ),
                       ),
+
                       SizedBox(height: 0.2.h),
+
                       RichText(
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         text: TextSpan(
                           style: TextStyle(
-                            fontSize: 9.5.sp,
+                            fontSize: 15.sp,
                             fontFamily: AppFonts.medium,
                             color: AppColors.textPrimary,
                           ),
                           children: [
                             TextSpan(
                               text: clientName,
-                              style: TextStyle(
-                                fontFamily: AppFonts.bold,
-                              ),
+                              style: TextStyle(fontFamily: AppFonts.bold),
                             ),
                             if (clientPhone.isNotEmpty)
                               TextSpan(
                                 text: ' ($clientPhone)',
                                 style: TextStyle(
-                                  fontSize: 8.sp,
+                                  fontSize: 14.sp,
                                   fontFamily: AppFonts.regular,
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
                           ],
@@ -334,33 +324,25 @@ class EquipmentCardWidget extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 InkWell(
                   onTap: onCallTap,
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 2.w,
-                      vertical: 0.8.h,
+                      horizontal: 2.5.w,
+                      vertical: 0.9.h,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECFDF5),
+                      color: AppColors.primary,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.call_outlined,
-                          size: 12.sp,
-                          color: const Color(0xFF059669),
-                        ),
-                        SizedBox(width: 1.w),
-                        Text(
-                          'Call',
-                          style: TextStyle(
-                            fontSize: 9.sp,
-                            fontFamily: AppFonts.semiBold,
-                            color: const Color(0xFF059669),
-                          ),
+                          size: 18.sp,
+                          color: AppColors.white,
                         ),
                       ],
                     ),
@@ -372,58 +354,68 @@ class EquipmentCardWidget extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 2.5.w,
-                    vertical: 0.9.h,
-                  ),
+                  height: 10.w,
+                  width: 10.w,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF7E6),
-                    borderRadius: BorderRadius.circular(9),
-                    border: Border.all(
-                      color: const Color(0xFFFDE68A),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.inventory_2_outlined,
-                        size: 14,
-                        color: Color(0xFFB45309),
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.30),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 4),
                       ),
-                      SizedBox(width: 1.5.w),
-                      Text(
-                        'Unassigned Stock',
-                        style: TextStyle(
-                          fontSize: 9.sp,
-                          fontFamily: AppFonts.medium,
-                          color: const Color(0xFFB45309),
-                        ),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.10),
+                        blurRadius: 5,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
+                  child: Icon(
+                    Icons.inventory_2_outlined,
+                    size: 18.sp,
+                    color: AppColors.white,
+                  ),
                 ),
-                const Spacer(),
+                SizedBox(width: 2.w),
+                Text(
+                  'Unassigned Stock',
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontFamily: AppFonts.medium,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Spacer(),
                 InkWell(
                   onTap: onAssignTap,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(10),
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 2.5.w,
-                      vertical: 0.9.h,
+                      horizontal: 3.w,
+                      vertical: 1.h,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFEFF6FF),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: const Color(0xFFBFDBFE),
-                      ),
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
                     ),
                     child: Text(
                       '+ Assign Client',
                       style: TextStyle(
-                        fontSize: 9.sp,
-                        fontFamily: AppFonts.medium,
-                        color: const Color(0xFF2563EB),
+                        fontSize: 12.5.sp,
+                        fontFamily: AppFonts.semiBold,
+                        color: AppColors.white,
                       ),
                     ),
                   ),
@@ -433,25 +425,38 @@ class EquipmentCardWidget extends StatelessWidget {
 
           SizedBox(height: 1.5.h),
 
-          // MODEL / SERIAL / INSTALL DATE
+          // DIVIDER
+          Container(
+            height: 1,
+            width: double.infinity,
+            color: AppColors.divider,
+          ),
+
+          SizedBox(height: 1.5.h),
+
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 1.h),
+            padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 2.w),
             decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: AppColors.borderLight,
-                width: 0.8,
-              ),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: lightGrey.withOpacity(0.8), width: 0.8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
             child: Row(
               children: [
-                _infoItem('MODEL NO.', modelNo),
+                Expanded(child: _infoItem('MODEL NO.', modelNo)),
                 _verticalDivider(),
-                _infoItem('SERIAL NO.', serialNo),
+                Expanded(child: _infoItem('SERIAL NO.', serialNo)),
                 _verticalDivider(),
-                _infoItem('INSTALL DATE', installDate),
+                Expanded(child: _infoItem('INSTALL DATE', installDate)),
               ],
             ),
           ),
@@ -462,26 +467,45 @@ class EquipmentCardWidget extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  'Price: $price',
-                  style: TextStyle(
-                    fontSize: 9.sp,
-                    fontFamily: AppFonts.regular,
-                    color: AppColors.textSecondary,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'PRICE',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontFamily: AppFonts.medium,
+                        color: AppColors.textSecondary,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    SizedBox(height: 0.4.h),
+                    Text(
+                      '$price',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontFamily: AppFonts.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
               _actionButton(
                 icon: Icons.edit_outlined,
-                color: AppColors.primary,
-                background: const Color(0xFFEFF6FF),
+                color: AppColors.white,
+                background: AppColors.primary,
                 onTap: onEditTap,
               ),
-              SizedBox(width: 2.w),
+
+              SizedBox(width: 2.5.w),
+
               _actionButton(
                 icon: Icons.delete_outline_rounded,
-                color: AppColors.danger,
-                background: const Color(0xFFFEF2F2),
+                color: AppColors.white,
+                background: AppColors.danger,
                 onTap: onDeleteTap,
               ),
             ],
@@ -492,44 +516,40 @@ class EquipmentCardWidget extends StatelessWidget {
   }
 
   Widget _infoItem(String label, String value) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text(
-            label,
+    return Column(
+      children: [
+        Text(
+          label,
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: 12.5.sp,
+            fontFamily: AppFonts.medium,
+            color: AppColors.textSecondary,
+          ),
+        ),
+
+        SizedBox(height: 0.5.h),
+
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 1.w),
+          child: Text(
+            value,
             maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 7.5.sp,
+              fontSize: 13.5.sp,
               fontFamily: AppFonts.medium,
-              color: AppColors.textSecondary,
+              color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 0.5.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 1.w),
-            child: Text(
-              value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 8.5.sp,
-                fontFamily: AppFonts.medium,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _verticalDivider() {
-    return Container(
-      height: 3.5.h,
-      width: 1,
-      color: AppColors.divider,
-    );
+    return Container(height: 3.5.h, width: 1, color: borderColor);
   }
 
   Widget _actionButton({
@@ -540,20 +560,16 @@ class EquipmentCardWidget extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(9),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        width: 8.w,
         height: 8.w,
+        width: 9.w,
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(9),
+          borderRadius: BorderRadius.circular(8),
         ),
-        alignment: Alignment.center,
-        child: Icon(
-          icon,
-          size: 17.sp,
-          color: color,
-        ),
+        child: Icon(icon, color: color, size: 18.sp),
       ),
     );
   }

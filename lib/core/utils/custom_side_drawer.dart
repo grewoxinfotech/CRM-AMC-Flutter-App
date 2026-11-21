@@ -7,6 +7,7 @@ import 'package:raiser_amc/ui/company_panel/clients/view/client_screen.dart';
 import 'package:raiser_amc/ui/company_panel/equipment/view/equipment_list.dart';
 import 'package:raiser_amc/ui/company_panel/home_screen/view/company_home_screen.dart';
 import 'package:raiser_amc/ui/company_panel/subscriptions/view/subscriptions.dart';
+import 'package:raiser_amc/ui/company_panel/technicians/view/technicians_list.dart';
 import 'package:sizer/sizer.dart';
 
 const List<Map<String, dynamic>> _kAmcDrawerMenu = [
@@ -82,7 +83,7 @@ class _CustomSideDrawerState extends State<CustomSideDrawer> {
         Get.back();
         break;
       case 'technicians':
-        // _closeAndGo(() => Get.to(() => const TechniciansScreen()));
+        _closeAndGo(() => Get.to(() => const TechniciansList()));
         Get.back();
         break;
       case 'equipment':

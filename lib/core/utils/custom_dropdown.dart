@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:raiser_amc/core/theme/app_colors.dart';
 import 'package:raiser_amc/core/theme/app_fonts.dart';
@@ -37,15 +38,21 @@ class CustomDropdown<T> extends StatefulWidget {
   });
 
   @override
-  State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
+  State<CustomDropdown<T>> createState() =>
+      _CustomDropdownState<T>();
 }
 
 class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   final LayerLink _layerLink = LayerLink();
+  final GlobalKey _dropdownKey = GlobalKey();
+
   OverlayEntry? _overlayEntry;
   bool _isOpen = false;
 
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController =
+  TextEditingController();
+  final ScrollController _dropdownScrollController = ScrollController();
+
   late List<T> _filteredItems;
 
   @override
@@ -57,6 +64,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   @override
   void didUpdateWidget(covariant CustomDropdown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+
     if (oldWidget.items != widget.items) {
       _filterList(_searchController.text);
     }
@@ -66,25 +74,32 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   void dispose() {
     _removeOverlay(notifyState: false);
     _searchController.dispose();
+    _dropdownScrollController.dispose();
     super.dispose();
   }
 
   void _filterList(String query) {
     final trimmed = query.trim().toLowerCase();
+
     if (trimmed.isEmpty) {
       _filteredItems = List<T>.from(widget.items);
     } else {
       _filteredItems = widget.items
           .where(
-            (item) => widget.itemLabel(item).toLowerCase().contains(trimmed),
+            (item) => widget
+            .itemLabel(item)
+            .toLowerCase()
+            .contains(trimmed),
       )
           .toList();
     }
+
     _overlayEntry?.markNeedsBuild();
   }
 
   void _toggleDropdown(FormFieldState<T> fieldState) {
     if (!widget.isEnabled) return;
+
     if (_isOpen) {
       _removeOverlay();
     } else {
@@ -95,8 +110,10 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   void _removeOverlay({bool notifyState = true}) {
     _overlayEntry?.remove();
     _overlayEntry = null;
+
     _searchController.clear();
     _filteredItems = List<T>.from(widget.items);
+
     if (notifyState && mounted) {
       setState(() {
         _isOpen = false;
@@ -107,13 +124,46 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   }
 
   void _showOverlay(FormFieldState<T> fieldState) {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final Size size = renderBox.size;
-    final Offset offset = renderBox.localToGlobal(Offset.zero);
+    // Get actual dropdown field position and size.
+    final BuildContext? dropdownContext =
+        _dropdownKey.currentContext;
 
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double spaceBelow = screenHeight - offset.dy - size.height - 20;
-    final double maxMenuHeight = spaceBelow < 22.h ? 22.h : 34.h;
+    if (dropdownContext == null) return;
+
+    final RenderObject? renderObject =
+    dropdownContext.findRenderObject();
+
+    if (renderObject is! RenderBox || !renderObject.hasSize) {
+      return;
+    }
+
+    final RenderBox renderBox = renderObject;
+    final Size size = renderBox.size;
+
+    final Offset offset =
+    renderBox.localToGlobal(Offset.zero);
+
+    final double screenHeight =
+        MediaQuery.of(context).size.height;
+
+    const double gap = 6;
+
+    final double spaceBelow =
+        screenHeight - offset.dy - size.height - gap - 12;
+
+    final double spaceAbove = offset.dy - gap - 12;
+
+    // If space below is less, open dropdown above.
+    final bool openAbove =
+        spaceBelow < 22.h && spaceAbove > spaceBelow;
+
+    final double availableSpace =
+    openAbove ? spaceAbove : spaceBelow;
+
+    final double maxMenuHeight =
+    availableSpace < 34.h
+        ? availableSpace
+        : 34.h;
 
     _filteredItems = List<T>.from(widget.items);
 
@@ -121,7 +171,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
       builder: (overlayContext) {
         return Stack(
           children: [
-            // બહાર ટેપ કરવાથી બંધ થાય તે માટે
+            // Outside tap closes dropdown.
             Positioned.fill(
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
@@ -129,16 +179,32 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               ),
             ),
 
-            // ડ્રોપડાઉન મેનુ બોક્સ
             CompositedTransformFollower(
               link: _layerLink,
               showWhenUnlinked: false,
-              offset: Offset(0, size.height + 6),
+
+              targetAnchor: openAbove
+                  ? Alignment.topLeft
+                  : Alignment.bottomLeft,
+
+              followerAnchor: openAbove
+                  ? Alignment.bottomLeft
+                  : Alignment.topLeft,
+
+              offset: Offset(
+                0,
+                openAbove ? -gap : gap,
+              ),
+
               child: Material(
                 color: Colors.transparent,
                 child: Container(
                   width: size.width,
-                  constraints: BoxConstraints(maxHeight: maxMenuHeight),
+                  constraints: BoxConstraints(
+                    maxHeight: maxMenuHeight > 0
+                        ? maxMenuHeight
+                        : 12.h,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(14),
@@ -165,10 +231,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // =====================================
-                        // SEARCH INPUT (જો isSearch: true હોય તો)
-                        // =====================================
-                        if (widget.isSearch) ...[
+                        if (widget.isSearch)
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 3.w,
@@ -211,12 +274,14 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                                   minWidth: 9.w,
                                   minHeight: 36,
                                 ),
-                                suffixIcon: _searchController.text.isNotEmpty
+                                suffixIcon:
+                                _searchController.text.isNotEmpty
                                     ? GestureDetector(
                                   onTap: () {
                                     _searchController.clear();
                                     _filterList('');
-                                    widget.onSearchChanged?.call('');
+                                    widget.onSearchChanged
+                                        ?.call('');
                                   },
                                   child: Icon(
                                     Icons.close_rounded,
@@ -233,14 +298,12 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                               ),
                             ),
                           ),
-                        ],
 
-                        // =====================================
-                        // ITEMS LIST
-                        // =====================================
                         if (_filteredItems.isEmpty)
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 2.5.h),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 2.5.h,
+                            ),
                             child: Text(
                               'No results found',
                               style: TextStyle(
@@ -253,15 +316,22 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                         else
                           Flexible(
                             child: Scrollbar(
-                              thumbVisibility: _filteredItems.length > 5,
+                              controller: _dropdownScrollController,
+                              thumbVisibility:
+                              _filteredItems.length > 5,
                               radius: const Radius.circular(10),
                               child: ListView.builder(
-                                padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                                controller: _dropdownScrollController,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 0.5.h,
+                                ),
                                 shrinkWrap: true,
                                 itemCount: _filteredItems.length,
                                 itemBuilder: (context, index) {
                                   final item = _filteredItems[index];
-                                  final bool isSelected = widget.value == item;
+
+                                  final bool isSelected =
+                                      widget.value == item;
 
                                   return InkWell(
                                     onTap: () {
@@ -283,7 +353,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                                             child: Text(
                                               widget.itemLabel(item),
                                               maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                              overflow:
+                                              TextOverflow.ellipsis,
                                               style: TextStyle(
                                                 fontSize: 14.sp,
                                                 fontFamily: isSelected
@@ -323,6 +394,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
     );
 
     Overlay.of(context, rootOverlay: true).insert(_overlayEntry!);
+
     setState(() {
       _isOpen = true;
     });
@@ -341,25 +413,21 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // =====================================================
-            // LABEL
-            // =====================================================
             if (widget.label.isNotEmpty) ...[
               Text(
                 widget.label,
                 style: TextStyle(
-                  fontSize: 14.sp,
-                  fontFamily: AppFonts.semiBold,
+                  fontSize: 15.sp,
+                  fontFamily: AppFonts.bold,
                   color: AppColors.textPrimary,
                 ),
               ),
-              SizedBox(height: 0.9.h),
+              SizedBox(height: 2.h),
             ],
 
-            // =====================================================
-            // DROPDOWN FIELD BOX
-            // =====================================================
+            // IMPORTANT: GlobalKey attached here.
             CompositedTransformTarget(
+              key: _dropdownKey,
               link: _layerLink,
               child: GestureDetector(
                 onTap: () => _toggleDropdown(fieldState),
@@ -440,9 +508,6 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
               ),
             ),
 
-            // =====================================================
-            // VALIDATION ERROR MESSAGE
-            // =====================================================
             if (hasError) ...[
               SizedBox(height: 0.6.h),
               Padding(
